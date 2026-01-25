@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>arovm - Home</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+<header>
+    <div class="logo-container">
+        <a href="/">
+            <img src="/images/logo.png" alt="arovm logo" class="logo">
+        </a>
+    </div>
+    <nav>
+        <a href="#about">About Us</a>
+
+        <div th:if="${username != null}" style="display: inline-block; margin-left: 15px;">
+            <span style="font-weight: bold; color: var(--primary); margin-right: 10px;" th:text="'Hello, ' + ${username}"></span>
+            <a href="/logout" class="btn btn-register" style="border: 1px solid #666; color: #666;">Logout</a>
+        </div>
+
+        <div th:if="${username == null}" style="display: inline-block;">
+            <button onclick="openModal('loginModal')" class="btn btn-login">Login</button>
+            <button onclick="openModal('registerModal')" class="btn btn-register">New User? Register</button>
+        </div>
+    </nav>
+</header>
+
+<section class="banner-section">
+    <img src="/images/banner.png" alt="DevSecOps Pipeline" class="full-width-banner">
+</section>
+
+<section class="welcome-section">
+    <h1>Welcome to arovm</h1>
+
+    <div th:if="${username == null}">
+        <button onclick="openModal('loginModal')" class="btn btn-login-large">Login</button>
+        <button onclick="openModal('registerModal')" class="btn btn-register-large">New User? Register</button>
+    </div>
+</section>
+
+<section class="video-section">
+
+    <div class="video-card">
+        <div th:if="${username != null}">
+            <iframe width="100%" height="250" src="https://www.youtube.com/embed/QHBE1z4nLQE" title="AI vs Cloud Engineer" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div th:unless="${username != null}" class="video-locked">
+            <i class="fas fa-lock"></i>
+            <h3>Premium Content</h3>
+            <p>Login to watch: <strong>AI Engineer or Cloud Engineer?</strong></p>
+            <button onclick="openModal('loginModal')" class="btn-lock">Login to Watch</button>
+        </div>
+    </div>
+
+    <div class="video-card">
+        <div th:if="${username != null}">
+            <iframe width="100%" height="250" src="https://www.youtube.com/embed/2wMssuJHLJ8" title="DevOps Jobs 2026" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div th:unless="${username != null}" class="video-locked">
+            <i class="fas fa-lock"></i>
+            <h3>Premium Content</h3>
+            <p>Login to watch: <strong>Why DevOps Jobs Will Explode</strong></p>
+            <button onclick="openModal('loginModal')" class="btn-lock">Login to Watch</button>
+        </div>
+    </div>
+
+    <div class="video-card">
+        <div th:if="${username != null}">
+            <iframe width="100%" height="250" src="https://www.youtube.com/embed/1lEXMlCQkqk" title="Future of Indian IT" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div th:unless="${username != null}" class="video-locked">
+            <i class="fas fa-lock"></i>
+            <h3>Premium Content</h3>
+            <p>Login to watch: <strong>Future Of Indian IT Service Companies</strong></p>
+            <button onclick="openModal('loginModal')" class="btn-lock">Login to Watch</button>
+        </div>
+    </div>
+
+</section>
+
+<section id="about" class="about-section">
+    <h2>About Us</h2>
+    <p>arovm is a bridge between complex business needs and scalable technical solutions.</p>
+
+    <div class="founder-card">
+        <h3>Vicky Kumar</h3>
+        <p class="role">Founder</p>
+        <p>Expert in DevOps, AWS, Azure, and Data Transformation Architectures.</p>
+        <a href="/founder" style="color: var(--primary); text-decoration: none; font-weight: bold; margin-top: 10px; display: inline-block;">View Full Profile &rarr;</a>
+    </div>
+</section>
+
+<footer>
+    <p>Copyright &copy; 2026 arovm. All rights reserved.</p>
+</footer>
+
+<div id="loginModal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('loginModal')">&times;</span>
+
+        <img src="/images/logo.png" style="height: 25px; margin-bottom: 15px;">
+        <h2>Sign In</h2>
+
+        <form action="/login" method="POST">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit" class="btn-primary">Login</button>
+        </form>
+
+        <p style="margin-top: 15px; font-size: 14px;">
+            New here? <a href="#" onclick="switchModal('loginModal', 'registerModal')" style="color: #ec7211; font-weight: bold;">Create an account</a>
+        </p>
+    </div>
+</div>
+
+<div id="registerModal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('registerModal')">&times;</span>
+
+        <img src="/images/logo.png" style="height: 25px; margin-bottom: 15px;">
+        <h2>Create Account</h2>
+
+        <form action="/register" method="POST">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="email" name="email" placeholder="Email Address" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit" class="btn-primary">Register</button>
+        </form>
+
+        <p style="margin-top: 15px; font-size: 14px;">
+            Already have an account? <a href="#" onclick="switchModal('registerModal', 'loginModal')" style="color: #ec7211; font-weight: bold;">Login</a>
+        </p>
+    </div>
+</div>
+
+<script>
+    // Open a specific modal
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = "flex";
+    }
+
+    // Close a specific modal
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = "none";
+    }
+
+    // Switch from Login -> Register (or vice versa)
+    function switchModal(closeId, openId) {
+        closeModal(closeId);
+        openModal(openId);
+    }
+
+    // Close modal if user clicks on the dark background
+    window.onclick = function(event) {
+        if (event.target.classList.contains('modal-overlay')) {
+            event.target.style.display = "none";
+        }
+    }
+</script>
+
+</body>
+</html>

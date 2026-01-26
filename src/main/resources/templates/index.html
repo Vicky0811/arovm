@@ -19,11 +19,13 @@
         <a href="#about">About Us</a>
 
         <div th:if="${username != null}" style="display: inline-block; margin-left: 15px;">
+            <a href="/ide" class="nav-link btn-ide" style="border: 1px solid #666; color: #666;">Online IDE</a>
             <span style="font-weight: bold; color: var(--primary); margin-right: 10px;" th:text="'Hello, ' + ${username}"></span>
             <a href="/logout" class="btn btn-register" style="border: 1px solid #666; color: #666;">Logout</a>
         </div>
 
         <div th:if="${username == null}" style="display: inline-block;">
+            <button onclick="openModal('loginModal')" class="nav-link btn-ide" href="/ide">IDE</button>
             <button onclick="openModal('loginModal')" class="btn btn-login">Login</button>
             <button onclick="openModal('registerModal')" class="btn btn-register">New User? Register</button>
         </div>

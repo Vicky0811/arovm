@@ -417,3 +417,17 @@ footer {
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+.btn-ide {
+    background-color: #28a745; /* Green color (like a 'Run' button) */
+    color: white !important;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background 0.3s;
+}
+
+.btn-ide:hover {
+    background-color: #218838; /* Darker green on hover */
+    color: #e6e6e6 !important;
+}

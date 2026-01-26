@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Arovm IDE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style type="text/css">
+        /* --- Layout & Navbar --- */
+        body { background-color: #f4f4f4; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        
+        #navbar { 
+            height: 70px; background: #2c3e50; color: white; 
+            display: flex; align-items: center; padding: 0 20px; 
+            justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.2); 
+            z-index: 10;
+        }
+
+        /* Brand Wrapper Styling */
+        .brand-wrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start; /* Align text left with logo */
+            margin-right: 1px;
+            text-decoration: none;
+        }
+
+        .brand-logo {
+        height: 40px;       /* Fits nicely within the 70px navbar */
+		width: auto;        /* Maintains aspect ratio */
+		margin-right: 15px; /* Space between logo and dropdown */
+		vertical-align: middle;
+		}
+		.product { font-weight: bold; font-size: 1.2rem; margin-right: 20px; }
+        /* Controls Container */
+        .controls-left { display: flex; align-items: center; gap: 10px; }
+        .controls-right { display: flex; align-items: center; gap: 10px; }
+        
+        /* Controls */
+        .controls-left, .controls-right { display: flex; align-items: center; gap: 10px; }
+        .lang-select { background: #34495e; color: white; border: 1px solid #4e6075; padding: 5px; border-radius: 4px; }
+        .btn-custom { color: white !important; font-size: 0.9rem; font-weight: 500; display: flex; align-items: center; gap: 5px; }
+
+        /* Button Colors */
+        .btn-run { background-color: #27ae60; border: none; } 
+        .btn-run:hover { background-color: #219150; }
+        
+        .btn-debug { background-color: #f39c12; border: none; } 
+        .btn-stop { background-color: #c0392b; border: none; } 
+        .btn-save { background-color: #2980b9; border: none; } 
+        .btn-projects { background-color: #7f8c8d; border: none; } 
+        .btn-terminal { background-color: #34495e; border: 1px solid #4e6075; }
+
+        /* --- Workspace Layout --- */
+        .ide-container { 
+            display: flex; 
+            flex: 1; 
+            height: calc(100vh - 70px); 
+            position: relative; 
+        }
+        
+        /* Editor */
+        #editor { 
+            width: 50%; 
+            height: 100%; 
+            font-size: 16px; 
+            transition: width 0.3s ease;
+        }
+        
+        /* Output */
+        .output-container { 
+            width: 50%; 
+            background: #1e1e1e; 
+            color: #00ff00; 
+            display: flex; flex-direction: column;
+            border-left: 2px solid #444; 
+            transition: width 0.3s ease;
+            overflow: hidden; 
+        }
+
+        .output-header { 
+            padding: 8px 15px; 
+            background: #333; 
+            color: #ccc; 
+            font-size: 0.9rem; 
+            font-weight: bold; 
+            border-bottom: 1px solid #555; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+        }
+        
+        .output-content { flex: 1; padding: 15px; overflow-y: auto; font-family: monospace; }
+        
+        .btn-minimize { background: none; border: none; color: white; cursor: pointer; }
+        .btn-minimize:hover { color: #f39c12; }
+
+        #webPreview { width: 100%; height: 100%; border: none; display: none; background: white; }
+    </style>
+</head>
+<body>
+
+    <div id="navbar">
+        <div class="controls-left">
+            <a href="/" class="brand-wrapper">
+                <img src="/images/logo.png" alt="Arovm" class="brand-logo">
+            </a>
+            <span class="product">IDE</span>
+            <select id="languageSelector" class="lang-select form-select" onchange="changeLanguage()">
+                <option value="" disabled selected>-- Select Language --</option>
+                <option value="java">Java</option>
+                <option value="python">Python 3</option>
+                <option value="c_cpp">C++</option>
+                <option value="c_cpp">C</option>
+                <option value="html">Web (HTML/CSS/JS)</option>
+            </select>
+        </div>
+        <div class="controls-right">
+            <button class="btn btn-custom btn-run" onclick="runCode()"><i class="fas fa-play"></i> Run</button>
+
+        </div>
+
+        <div class="controls-right">
+            <button class="btn btn-custom btn-run" onclick="runCode()"><i class="fas fa-play"></i> Run</button>
+            <button class="btn btn-custom btn-debug" onclick="debugCode()"><i class="fas fa-bug"></i> Debug</button>
+            <button class="btn btn-custom btn-stop" onclick="stopCode()"><i class="fas fa-stop"></i> Stop</button>
+            <button class="btn btn-custom btn-save" onclick="saveProject()"><i class="fas fa-save"></i> Save</button>
+            <button class="btn btn-custom btn-projects" onclick="openMyProjects()"><i class="fas fa-folder-open"></i> My Projects</button>
+            <button class="btn btn-custom btn-secondary" onclick="downloadCode()" title="Download File">
+                <i class="fas fa-download"></i> Download
+            </button>
+            <button class="btn btn-custom btn-terminal" onclick="toggleTerminal()" title="Toggle Terminal">
+                <i class="fas fa-terminal"></i>
+            </button>
+            
+            <a href="/" class="text-white-50 ms-2"><i class="fas fa-home"></i></a>
+        </div>
+    </div>
+
+    <div class="ide-container">
+        <div id="editor">// Select a language...</div>
+        
+        <div class="output-container" id="outputPanel">
+            <div class="output-header">
+                <span>OUTPUT TERMINAL</span>
+                <button class="btn-minimize" onclick="minimizeOutput()" title="Minimize">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+            <div class="output-content">
+                <pre id="outputText" style="margin: 0;">Ready.</pre>
+                <iframe id="webPreview"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.12/ace.js"></script>
+    <script>
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.session.setMode("ace/mode/text");
+        editor.setFontSize(16);
+
+        const snippets = {
+            "java": 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello Arovm!");\n    }\n}',
+            "python": 'print("Hello Arovm!")',
+            "c_cpp": '#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "Hello Arovm!";\n    return 0;\n}',
+            "html": '<html>\n<body>\n  <h1>Hello Web!</h1>\n</body>\n</html>'
+        };
+
+        function changeLanguage() {
+            var lang = document.getElementById("languageSelector").value;
+            var mode = (lang === "c_cpp") ? "c_cpp" : lang; 
+            editor.session.setMode("ace/mode/" + mode);
+            if(snippets[lang]) editor.setValue(snippets[lang]);
+        }
+
+        // --- Layout Control ---
+
+        function minimizeOutput() {
+            var outputPanel = document.getElementById("outputPanel");
+            var editorDiv = document.getElementById("editor");
+            outputPanel.style.width = "0%";
+            editorDiv.style.width = "100%";
+            setTimeout(() => editor.resize(), 310);
+        }
+
+        function toggleTerminal() {
+            var outputPanel = document.getElementById("outputPanel");
+            var editorDiv = document.getElementById("editor");
+
+            if (outputPanel.style.width === "0%") {
+                outputPanel.style.width = "50%";
+                editorDiv.style.width = "50%";
+            } else {
+                outputPanel.style.width = "0%";
+                editorDiv.style.width = "100%";
+            }
+            setTimeout(() => editor.resize(), 310);
+        }
+
+        // --- Run Logic ---
+
+        function runCode() {
+            var lang = document.getElementById("languageSelector").value;
+            if(!lang) { alert("Please select a language first!"); return; }
+            
+            var outputPanel = document.getElementById("outputPanel");
+            if (outputPanel.style.width === "0%" || outputPanel.style.width === "") {
+                toggleTerminal(); 
+            }
+
+            var code = editor.getValue();
+            var outputText = document.getElementById("outputText");
+            var webPreview = document.getElementById("webPreview");
+
+            if (lang === "html") {
+                outputText.style.display = "none";
+                webPreview.style.display = "block";
+                var doc = webPreview.contentWindow.document;
+                doc.open(); doc.write(code); doc.close();
+            } else {
+                webPreview.style.display = "none";
+                outputText.style.display = "block";
+                outputText.innerText = "Running...";
+                
+                fetch('/api/run', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ code: code, language: lang })
+                })
+                .then(r => r.text())
+                .then(d => outputText.innerText = d)
+                .catch(e => outputText.innerText = "Error: " + e);
+            }
+        }
+
+        function debugCode() { alert("Debug: Coming Soon"); }
+        function stopCode() { alert("Stop Signal Sent"); }
+        function saveProject() { 
+            var name = prompt("Enter Project Name:");
+            if(name) alert("Saving " + name); 
+        }
+        function openMyProjects() { alert("Opening Projects..."); }
+        function openMyProjects() {
+            fetch('/api/projects/all').then(r => r.json()).then(projects => {
+                const body = document.getElementById('projectListBody');
+                body.innerHTML = projects.map(p => `
+            <tr>
+                <td>${p.name}</td>
+                <td><span class="badge bg-primary">${p.language}</span></td>
+                <td>${new Date(p.createdAt).toLocaleDateString()}</td>
+                <td>
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-success" onclick="loadProject('${btoa(p.code)}', '${p.language}')">
+                            <i class="fas fa-folder-open"></i> Open
+                        </button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteProject(${p.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </td>
+            </tr>`).join('');
+                projectModal.show();
+            });
+        }
+        function deleteProject(id) {
+            if (!confirm("Are you sure you want to delete this project?")) return;
+
+            fetch(`/api/projects/delete/${id}`, {
+                method: 'DELETE'
+            })
+                .then(response => response.text())
+                .then(msg => {
+                    alert(msg);
+                    openMyProjects(); // Refresh the list automatically
+                })
+                .catch(error => alert("Error: " + error));
+        }
+        function downloadCode() {
+            const code = editor.getValue();
+            const lang = document.getElementById("languageSelector").value;
+
+            if(!lang) {
+                alert("Please select a language first!");
+                return;
+            }
+
+            // Determine file extension
+            let extension = ".txt";
+            let filename = "arovm_project";
+
+            switch(lang) {
+                case "java": extension = ".java"; filename = "Main"; break;
+                case "python": extension = ".py"; filename = "script"; break;
+                case "c_cpp": extension = ".cpp"; filename = "main"; break;
+                case "html": extension = ".html"; filename = "index"; break;
+            }
+
+            // Create a blob and trigger a hidden download link
+            const blob = new Blob([code], { type: 'text/plain' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+
+            a.href = url;
+            a.download = filename + extension;
+            document.body.appendChild(a);
+            a.click();
+
+            // Cleanup
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }
+        function stopCode() {
+            var outputText = document.getElementById("outputText");
+
+            fetch('/api/stop', {
+                method: 'POST'
+            })
+                .then(response => response.text())
+                .then(msg => {
+                    outputText.innerText += "\n[Process Stopped by User]";
+                    console.log(msg);
+                })
+                .catch(error => {
+                    alert("Could not stop the process: " + error);
+                });
+        }
+    </script>
+</body>
+</html>

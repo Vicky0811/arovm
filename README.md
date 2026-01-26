@@ -5,10 +5,53 @@
 ![Java](https://img.shields.io/badge/Java-17-orange)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.0-green)
 
-**Arovm** is a [Briefly describe what the website does, e.g., "comprehensive financial tracking dashboard" or "personal portfolio website"] designed to provide [mention the main benefit, e.g., "real-time analytics" or "showcase of development projects"].
+**Arovm** is a [Briefly describe what the website does, e.g., "comprehensive financial tracking dashboard" or 
+"personal portfolio website"] designed to provide [mention the main benefit, e.g., "real-time analytics" or 
+"showcase of development projects"].
+
+# Arovm IDE - Full-Stack Cloud-Based Code Editor
+**Arovm IDE** is a high-performance, web-based integrated development environment (IDE) built for the modern
+developer. It allows users to write, compile, and execute code in multiple languages (Java 21, Python, C++) 
+within isolated, secure Docker containers.
+
 
 ## 🚀 Features
 
+
+
+
+## 🚀 Features
+
+* **Multi-Language Execution:** Run Java 21, Python 3, and C/C++ instantly.
+* **Real-Time Streaming:** Integrated with **WebSockets** to provide live, line-by-line terminal output—perfect for debugging infinite loops.
+* **Secure Sandboxing:** Every execution happens in a fresh Docker container, ensuring the host server remains secure.
+* **Profile Management:** Save and manage your projects in a personal workspace backed by **AWS RDS (MySQL)**.
+* **Web Preview:** Built-in HTML/CSS/JS previewer for front-end development.
+* **Modern UI:** A clean, dark-themed editor powered by the Ace Editor engine.
+
+## 🛠️ Tech Stack
+
+* **Backend:** Java 21, Spring Boot 3.x, Spring Security, Spring WebSocket.
+* **Frontend:** Thymeleaf, JavaScript (ES6+), Bootstrap 5, Ace Editor.
+* **Infrastructure:** Docker (for code execution), AWS RDS (Database), AWS EC2 (Hosting).
+* **Database:** MySQL / Amazon Aurora.
+
+
+
+## ⚙️ Prerequisites
+
+Before running this project locally, ensure you have:
+1. **Java 21 JDK** installed.
+2. **Docker Desktop** installed and running.
+3. **Maven** for dependency management.
+4. **MySQL** or an active **AWS RDS** instance.
+
+## 🏃 Quick Start
+
+1. **Clone the repository:**
+   ```bash
+   git clone [https://github.com/your-username/arovm-ide.git](https://github.com/your-username/arovm-ide.git)
+   cd arovm-ide
 * **User Authentication:** Secure login and registration functionality.
 * **Responsive Design:** Fully optimized for desktop, tablet, and mobile devices.
 * **Real-time Data:** [If applicable, e.g., "Live tracking of gold/silver prices"].

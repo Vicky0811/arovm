@@ -24,14 +24,15 @@ public class SecurityConfig {
                         // Everything else (like /ide and /api/**) requires login
                         .anyRequest().authenticated()
                 )
-
-                // 3. Login Configuration
+// Inside your SecurityFilterChain configuration
                 .formLogin(form -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/login")
+                        .loginPage("/") // Redirect here for unauthorized access
+                        .loginProcessingUrl("/login") // This matches your form action
                         .defaultSuccessUrl("/", true)
+                        .failureUrl("/?error=true") // Redirect back to Home with an error flag
                         .permitAll()
                 )
+
 
                 // 4. Logout Configuration
                 .logout(logout -> logout

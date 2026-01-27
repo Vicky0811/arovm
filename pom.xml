@@ -9,8 +9,8 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.arovm</groupId>
-	<artifactId>platform</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>arovm</artifactId>
+	<version>v2.0</version>
 	<name>arovm-platform</name>
 	<description>Welcome to arovm webpage </description>
 	<url/>

@@ -33,7 +33,7 @@ public class MainController {
         if (auth != null && auth.isAuthenticated() && !"anonymousUser".equals(auth.getPrincipal())) {
             model.addAttribute("username", auth.getName());
         }
-        return "index";
+         return "index";
     }
 
     @GetMapping("/ide")

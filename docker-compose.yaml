@@ -8,8 +8,4 @@ services:
     volumes:
       # Allows the container to manage the host's Docker engine
       - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://your-rds-endpoint:3306/arovm_db
-      - SPRING_DATASOURCE_USERNAME=admin
-      - SPRING_DATASOURCE_PASSWORD=Vicky5349
     restart: on-failure
